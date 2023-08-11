@@ -30,6 +30,17 @@ public static class ConfigDataHelper
             return userData;
         }
     }
+
+    private static HeroSizeStore heroSizeStore = null;
+    public static HeroSizeStore HeroSizeStore 
+    {
+        get
+        {
+            if (heroSizeStore == null)
+                heroSizeStore = Resources.Load<HeroSizeStore>("Config/HeroSizeConfig");
+            return heroSizeStore;
+        }
+    }
     
 
     private static UserData GetDefaultUserData()
@@ -51,5 +62,10 @@ public static class ConfigDataHelper
         hero1.rarity = HeroRarity.Common;
         hero1.attributes = GameConfig.heroConfig.baseAttribute;
         return hero1;
+    }
+
+    public static LevelConfig GetLevelConfig(int level)
+    {
+        return GameConfig.levelConfigs[level];
     }
 }

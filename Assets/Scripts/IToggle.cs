@@ -39,4 +39,6 @@ public class IToggle<T> : MonoBehaviour where T : class
 
     public void ToggleOff() => toggle.isOn = false;
 
+    public void Hide() => gameObject.SetActive(false);
+
 }

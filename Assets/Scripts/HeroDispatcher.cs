@@ -50,7 +50,7 @@ public class HeroDispatcher : MonoBehaviour
     private void InstantiateHero(string heroName, Vector3 postition, HeroData heroData)
     {
         GameObject heroObj = Resources.Load<GameObject>(string.Format(GameConstants.HERO, heroName));
-        HeroController heroController = Instantiate(heroObj, transform).GetComponent<HeroController>();
+        HeroController heroController = Instantiate(heroObj).GetComponent<HeroController>();
         heroController.transform.position = postition;
         heroController.gameObject.SetActive(true);
         heroController.Initialized(heroData);

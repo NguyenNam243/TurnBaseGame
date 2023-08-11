@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sizes:
   - heroName: Monster1
-    sizeDelta: {x: 400, y: 400}
+    size: 0.6061358
   - heroName: Monster2
-    sizeDelta: {x: 400, y: 400}
+    size: 1.297252
+  - heroName: Hero1
+    size: 0.1996924
+  - heroName: Hero2
+    size: 0.224
+  - heroName: Hero3
+    size: 0.6838104

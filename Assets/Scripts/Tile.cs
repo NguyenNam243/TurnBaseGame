@@ -18,13 +18,18 @@ namespace TB.Grid
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            
+        }
+
+        private void OnMouseDown()
+        {
             if (HeroDispatcher.anyCardOn)
             {
                 HeroDispatcher.OnSpawnHeroEvent?.Invoke(this);
             }
         }
 
-        public void Hide() => icon.enabled = false;
+        public void Hide() => gameObject.SetActive(false);
     }
 }
 

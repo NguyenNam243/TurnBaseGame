@@ -8,7 +8,7 @@ public class HeroSizeStore : ScriptableObject
     public class HeroSize
     {
         public string heroName;
-        public Vector2 sizeDelta;
+        public float size;
     }
 
     public List<HeroSize> sizes;

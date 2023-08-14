@@ -31,7 +31,7 @@ public class HeroDispatcher : MonoBehaviour
 
     private void OnSpawmHero(Tile tile)
     {
-        InstantiateHero("Hero", tile.transform.position, heroCardGroup.CurrentDataSelected);
+        InstantiateHero(heroCardGroup.CurrentDataSelected.name, tile.transform.position, heroCardGroup.CurrentDataSelected);
         heroCardGroup.CurrentToggleOn.Hide();
         heroCardGroup.CurrentToggleOn.ToggleOff();
         tile.Hide();
@@ -43,17 +43,19 @@ public class HeroDispatcher : MonoBehaviour
         LevelConfig levelConfig = ConfigDataHelper.GetLevelConfig(level);
         foreach (var monster in levelConfig.monsters)
         {
-            InstantiateHero("Hero", new Vector3(monster.Value.position.x, monster.Value.position.y, monster.Value.position.z), monster.Value.heroData);
+            HeroController _monster = InstantiateHero(monster.Value.heroData.name, new Vector3(monster.Value.position.x, monster.Value.position.y, monster.Value.position.z), monster.Value.heroData);
+            _monster.transform.eulerAngles = new Vector3(0, 180, 0);
         }
     }
 
-    private void InstantiateHero(string heroName, Vector3 postition, HeroData heroData)
+    private HeroController InstantiateHero(string heroName, Vector3 postition, HeroData heroData)
     {
         GameObject heroObj = Resources.Load<GameObject>(string.Format(GameConstants.HERO, heroName));
         HeroController heroController = Instantiate(heroObj).GetComponent<HeroController>();
         heroController.transform.position = postition;
         heroController.gameObject.SetActive(true);
         heroController.Initialized(heroData);
+        return heroController;
     }
 
     private void OnStartCombat()

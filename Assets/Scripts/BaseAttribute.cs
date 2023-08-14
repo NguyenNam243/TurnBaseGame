@@ -1,6 +1,7 @@
 public class BaseAttribute
 {
     public AttributeType type;
+    public float ratio;
     public float value;
 
     public BaseAttribute()

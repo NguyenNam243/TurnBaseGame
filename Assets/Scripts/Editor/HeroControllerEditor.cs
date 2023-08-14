@@ -17,5 +17,15 @@ public class HeroControllerEditor : Editor
         {
             Debug.Log(controller.transform.position);
         }
+
+        if (GUILayout.Button("Attack"))
+        {
+            controller.DoAttack(controller.targetAttack);
+        }
+        if (GUILayout.Button("Fire"))
+        {
+            controller.DoFire(controller.targetAttack);
+        }
+
     }
 }

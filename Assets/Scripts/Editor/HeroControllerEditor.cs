@@ -22,10 +22,5 @@ public class HeroControllerEditor : Editor
         {
             controller.DoAttack(controller.targetAttack);
         }
-        if (GUILayout.Button("Fire"))
-        {
-            controller.DoFire(controller.targetAttack);
-        }
-
     }
 }

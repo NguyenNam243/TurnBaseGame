@@ -5080,7 +5080,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 49540641385778874}
-  - component: {fileID: 560346533186235415}
+  - component: {fileID: 476140531700441172}
   m_Layer: 0
   m_Name: Hero3
   m_TagString: Untagged
@@ -5105,7 +5105,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &560346533186235415
+--- !u!114 &476140531700441172
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5114,7 +5114,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 53121858952927404}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6068cd4bea6f1ea499760c22425a24f5, type: 3}
+  m_Script: {fileID: 11500000, guid: b31686eab2c719146bec03c097e5806b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timeJump: 0.3

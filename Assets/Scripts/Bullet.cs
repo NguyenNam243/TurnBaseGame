@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -5,11 +6,10 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-
-
     private Tween moveTween = null;
 
-    public void Fire(Transform target)
+
+    public void Fire(Transform target, Action OnComplete = null)
     {
         moveTween.Stop();
 
@@ -20,8 +20,16 @@ public class Bullet : MonoBehaviour
             Vector3 dir = lastPos - transform.position;
             transform.right = -dir;
             lastPos = transform.position;
+        }).OnComplete(() => 
+        {
+            OnComplete?.Invoke();
+            Destroy(gameObject);
         });
     }
-    
 
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+    }
 }

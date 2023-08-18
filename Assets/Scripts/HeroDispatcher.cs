@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using TB.Grid;
 using UnityEngine;
@@ -19,18 +20,14 @@ public class HeroDispatcher : MonoBehaviour
     [Header("Object Reference")]
     [SerializeField] private Button combatBtn = null;
 
-
-    private List<HeroController> heroes = new List<HeroController>(); 
-    private List<HeroController> enemies = null;
-
     public static bool anyCardOn = false;
     public static Action<Tile> OnSpawnHeroEvent = null;
 
     private HeroController takingHero = null;
     private HeroController takedHero = null;
 
-    private Dictionary<HeroController, bool> takingGroup = new Dictionary<HeroController, bool>();
-    private Dictionary<HeroController, bool> takedGroup = new Dictionary<HeroController, bool>();
+    private List<HeroController> takingGroup = new List<HeroController>();
+    private List<HeroController> takedGroup = new List<HeroController>();
 
 
     private void Awake()
@@ -38,36 +35,71 @@ public class HeroDispatcher : MonoBehaviour
         OnSpawnHeroEvent = OnSpawmHero;
         combatBtn.onClick.AddListener(OnStartCombat);
 
-        enemies = SpawmMonster(levelIndex);
+        takedGroup = SpawmMonster(levelIndex);
     }
 
     private void OnAttackFinish()
     {
-        Debug.Log("Next Turn");
-        takingGroup[takingHero] = true;
+        takingHero.hasAttack = true;
 
-        int targetIndex = UnityEngine.Random.Range(0, takedGroup.Count + 1);
+        List<HeroController> temp = takedGroup.Where(x => x.Alive).ToList();
+        int targetIndex = UnityEngine.Random.Range(0, temp.Count);
         int index = 0;
         HeroController targetAttack = null;
 
-        foreach (var hero in takedGroup)
+        foreach (var hero in temp)
         {
             if (index == targetIndex)
             {
-                targetAttack = hero.Key;
+                targetAttack = hero;
                 break;
             }
+
             index++;
         }
 
+        if (targetAttack == null)
+        {
+            Debug.Log("End Combat");
+            return;
+        }
+
+        HeroController nextHero = GetNextHero(takingGroup);
+        if (nextHero != null)
+        {
+            nextHero.DoAttack(targetAttack);
+            takingHero = nextHero;
+        }
+        else
+        {
+            ResetTurn();
+            GameUtilities.Swap(ref takingGroup, ref takedGroup);
+            takingHero = GetHeroMaxSpeed(takingGroup);
+            takedHero = GetHeroMaxSpeed(takedGroup);
+            takingHero.DoAttack(takedHero);
+        }
+
+    }
+
+    private void ResetTurn()
+    {
+        foreach (var hero in takingGroup)
+            hero.hasAttack = false;
+
+        foreach (var hero in takedGroup)
+            hero.hasAttack = false;
+    }
+
+    private HeroController GetNextHero(List<HeroController> collection)
+    {
         foreach (var hero in takingGroup)
         {
-            if (takingGroup[hero.Key] == false)
+            if (hero.hasAttack == false && hero.Alive)
             {
-                hero.Key.DoAttack(targetAttack);
-                break;
+                return hero;
             }
         }
+        return null;
     }
 
     public void OnSpawmHero(Tile tile)
@@ -77,7 +109,7 @@ public class HeroDispatcher : MonoBehaviour
         heroCardGroup.CurrentToggleOn.ToggleOff();
         tile.Hide();
         anyCardOn = false;
-        heroes.Add(hero);
+        takingGroup.Add(hero);
         hero.OnAttackFinish = OnAttackFinish;
     }
 
@@ -108,17 +140,11 @@ public class HeroDispatcher : MonoBehaviour
 
     private void OnStartCombat()
     {
-        HeroController heroMaxSpeed = GetHeroMaxSpeed(heroes);
-        HeroController enemyMaxSpeed = GetHeroMaxSpeed(enemies);
+        HeroController heroMaxSpeed = GetHeroMaxSpeed(takingGroup);
+        HeroController enemyMaxSpeed = GetHeroMaxSpeed(takedGroup);
 
         takingHero = heroMaxSpeed;
         takedHero = enemyMaxSpeed;
-
-        foreach (var hero in heroes)
-            takingGroup.Add(hero, false);
-
-        foreach (var hero in enemies)
-            takedGroup.Add(hero, false);
 
         if (heroMaxSpeed.HeroData.attributes[AttributeType.SPD].value < enemyMaxSpeed.HeroData.attributes[AttributeType.SPD].value)
         {
@@ -131,18 +157,18 @@ public class HeroDispatcher : MonoBehaviour
 
     private HeroController GetHeroMaxSpeed(List<HeroController> collection)
     {
-        float maxSpeed = collection[0].HeroData.attributes[AttributeType.SPD].value;
-        int index = 0;
+        float maxSpeed = 0;
+        HeroController maxHero = null;
 
-        for(int i = 0; i < collection.Count; i++)
+        foreach (var hero in collection)
         {
-            if (collection[i].HeroData.attributes[AttributeType.SPD].value > maxSpeed)
-            {
-                maxSpeed = collection[i].HeroData.attributes[AttributeType.SPD].value;
-                index = i;
-            }
+            if (!hero.Alive)
+                continue;
+
+            if (hero.HeroData.attributes[AttributeType.SPD].value >= maxSpeed)
+                maxHero = hero;
         }
-        return collection[index];
+        return maxHero;
     }
 
     private void Update()

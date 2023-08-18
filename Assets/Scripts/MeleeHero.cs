@@ -1,22 +1,32 @@
+using System;
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
 public class MeleeHero : HeroController
 {
+    private Tween backTween = null;
 
     protected override void Awake()
     {
         base.Awake();
+        backTween.Stop();
         heroAnimation.AttackFinish = () =>
         {
             ReturnLocation(() =>
             {
-                DOVirtual.DelayedCall(1, () => 
+                StartCoroutine(DelayCall(1, () =>
                 {
                     OnAttackFinish?.Invoke();
-                });
+                }));
             });
         };
+    }
+
+    private IEnumerator DelayCall(float time, Action Callback)
+    {
+        yield return new WaitForSeconds(time);
+        Callback?.Invoke();
     }
 
     protected override void DoAttackAnimation(HeroController target)

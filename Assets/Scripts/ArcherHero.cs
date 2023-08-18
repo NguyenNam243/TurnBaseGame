@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ArcherHero : HeroController
 {
+    [Header("Object Reference")]
+    [SerializeField] protected Transform bulletPos = null;
 
     public override string AttackAnimation => "Fire";
 

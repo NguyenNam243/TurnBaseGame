@@ -19,7 +19,7 @@ public class CombatManager : MonoBehaviour
 
     private void Awake()
     {
-        enemies = heroDispatcher.SpawmMonster(levelIndex);
+        //enemies = heroDispatcher.SpawmMonster(levelIndex);
 
 
     }

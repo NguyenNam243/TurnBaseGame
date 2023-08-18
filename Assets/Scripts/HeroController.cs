@@ -9,9 +9,8 @@ public class HeroController : MonoBehaviour
     [SerializeField] protected float jumpHeight = 1f;
     [SerializeField] protected float attackRadius = 1f;
 
-    [Space]
-    [Header("Object Reference")]
-    [SerializeField] protected Transform bulletPos = null;
+    public bool hasAttack = false;
+
 
     public HeroController targetAttack = null;
 
@@ -31,6 +30,7 @@ public class HeroController : MonoBehaviour
 
     public Action OnAttackFinish = null;
 
+    protected GameObject damageAsset = null;
 
 
     protected virtual void Awake()
@@ -52,10 +52,17 @@ public class HeroController : MonoBehaviour
 
     public virtual void DoAttack(HeroController target)
     {
-        if (!Alive || !target.Alive)
-            return;
-
         this.targetAttack = target;
+
+        try
+        {
+            if (!Alive || !target.Alive)
+                return;
+        }
+        catch
+        {
+            Debug.Log(target);
+        }
 
         canAttack = CanAttack(target);
 
@@ -90,7 +97,7 @@ public class HeroController : MonoBehaviour
         if (hasDefence)
         {
             float value = enemyDamage * (HeroData.attributes[AttributeType.DFS].value / 100f);
-            Debug.Log($"{gameObject.name} xuất hiện bảo vệ: {value} damage");
+            //Debug.Log($"{gameObject.name} xuất hiện bảo vệ: {value} damage");
             return value;
         }
 
@@ -103,7 +110,7 @@ public class HeroController : MonoBehaviour
         if (hasCrit)
         {
             float value = HeroData.attributes[AttributeType.ATK].value * (HeroData.attributes[AttributeType.CRIT].value / 100f);
-            Debug.Log($"{gameObject.name} xuất hiện CRIT: {value} damage");
+            //Debug.Log($"{gameObject.name} xuất hiện CRIT: {value} damage");
             return value;
         }
 
@@ -116,7 +123,7 @@ public class HeroController : MonoBehaviour
         if (hasHealing)
         {
             float value = HeroData.attributes[AttributeType.HP].value * (HeroData.attributes[AttributeType.HEALING].value / 100f);
-            Debug.Log($"{gameObject.name} xuất hiện Healing: {value} HP");
+            //Debug.Log($"{gameObject.name} xuất hiện Healing: {value} HP");
             return value;
         }
 
@@ -135,7 +142,7 @@ public class HeroController : MonoBehaviour
 
         if (!GetAccuracy())
         {
-            Debug.Log(gameObject.name + " đánh trượt");
+            //Debug.Log(gameObject.name + " đánh trượt");
             return false;
         }
 
@@ -144,6 +151,15 @@ public class HeroController : MonoBehaviour
 
     public void TakedDamage(float damage)
     {
+        if (damageAsset == null)
+            damageAsset = Resources.Load<GameObject>("Damage");
+
+        GameObject damageText = Instantiate(damageAsset, CanvasRoot.root);
+        Vector3 anchorPos = Camera.main.WorldToScreenPoint(defaultPos);
+        anchorPos = new Vector3(anchorPos.x - (Screen.width / 2), anchorPos.y - (Screen.height / 2), 0);
+        damageText.GetComponent<UI_Damage>().UpdateDamage(damage, anchorPos);
+
+
         ator.Play("Hit");
         CurrentHelth -= damage;
         if (CurrentHelth <= 0)
@@ -152,12 +168,14 @@ public class HeroController : MonoBehaviour
             ator.Play("Die");
         }
 
-        Debug.Log($"{gameObject.name} bị trừ {damage} HP - Còn lại: {CurrentHelth} HP");
+        //Debug.Log($"{gameObject.name} bị trừ {damage} HP - Còn lại: {CurrentHelth} HP");
     }
 
     protected Tween jumpTween = null;
+    protected Vector3 target;
     protected void MoveToRTarget(Transform target, Action OnFinish)
     {
+        this.target = target.position;
         jumpTween.Stop();
         transform.DOJump(target.position + target.right * attackRadius, jumpHeight, 1, timeJump).OnComplete(() => { OnFinish?.Invoke(); });
     }

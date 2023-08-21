@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -42,6 +44,25 @@ public static class ConfigDataHelper
         }
     }
     
+    private static List<CostumeData> itemsData = null;
+    public static List<CostumeData> ItemsData 
+    {
+        get
+        {
+            if (ES3.KeyExists(GameConstants.ITEMSDATA))
+            {
+                itemsData = ES3.Load<List<CostumeData>>(GameConstants.ITEMSDATA);
+            }
+            else
+            {
+                itemsData = GetDefaultItems();
+                ES3.Save(GameConstants.ITEMSDATA, itemsData);
+            }
+
+            return itemsData;
+        }
+    }
+
 
     private static UserData GetDefaultUserData()
     {
@@ -67,5 +88,18 @@ public static class ConfigDataHelper
     public static LevelConfig GetLevelConfig(int level)
     {
         return GameConfig.levelConfigs[level];
+    }
+
+    public static List<CostumeData> GetDefaultItems()
+    {
+        ItemDefaultStore store = Resources.Load<ItemDefaultStore>("ItemsDefault");
+        List<CostumeData> result = new List<CostumeData>();
+
+        foreach (var item in store.costumesDefault)
+        {
+            result.Add(GameConfig.costumesConfig[item.type][item.costumeName]);
+        }
+
+        return result;
     }
 }

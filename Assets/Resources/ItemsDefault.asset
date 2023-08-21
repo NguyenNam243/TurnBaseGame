@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef9c5e1c84002140b16f0173815c793, type: 3}
+  m_Name: ItemsDefault
+  m_EditorClassIdentifier: 
+  costumesDefault:
+  - type: 0
+    costumeName: Helmet1
+  - type: 1
+    costumeName: Clothing1
+  - type: 2
+    costumeName: Boots1
+  - type: 3
+    costumeName: Ring1
+  - type: 4
+    costumeName: Trousers1

@@ -155,10 +155,10 @@ public class HeroController : MonoBehaviour
             damageAsset = Resources.Load<GameObject>("Damage");
 
         GameObject damageText = Instantiate(damageAsset, CanvasRoot.root);
-        Vector3 anchorPos = Camera.main.WorldToScreenPoint(defaultPos);
-        anchorPos = new Vector3(anchorPos.x - (Screen.width / 2), anchorPos.y - (Screen.height / 2), 0);
+        Vector3 anchorPos = Camera.main.WorldToViewportPoint(defaultPos);
+        anchorPos = new Vector3((anchorPos.x * CanvasRoot.root.sizeDelta.x) - (CanvasRoot.root.sizeDelta.x / 2),
+           (anchorPos.y * CanvasRoot.root.sizeDelta.y) - (CanvasRoot.root.sizeDelta.y / 2), 0);
         damageText.GetComponent<UI_Damage>().UpdateDamage(damage, anchorPos);
-
 
         ator.Play("Hit");
         CurrentHelth -= damage;

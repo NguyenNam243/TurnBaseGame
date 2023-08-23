@@ -31,6 +31,7 @@ public static class ConfigDataHelper
                 userData = ES3.Load<UserData>(GameConstants.USERDATA);
             return userData;
         }
+        set => ES3.Save(GameConstants.USERDATA, value);
     }
 
     private static HeroSizeStore heroSizeStore = null;

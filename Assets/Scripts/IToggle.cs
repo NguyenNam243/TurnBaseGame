@@ -21,7 +21,8 @@ public class IToggle<T> : MonoBehaviour where T : class
         toggle = GetComponent<Toggle>();
         toggle.group = GetComponentInParent<ToggleGroup>();
         toggle.onValueChanged.AddListener(OnValueChanged);
-        ator.speed = 0;
+        if (ator != null)
+            ator.speed = 0;
     }
 
     public virtual void Initialized(T Data)
@@ -31,8 +32,12 @@ public class IToggle<T> : MonoBehaviour where T : class
 
     protected void OnValueChanged(bool isOn)
     {
-        ator.Rebind();
-        ator.speed = isOn ? 1 : 0;
+        if (ator != null)
+        {
+            ator.Rebind();
+            ator.speed = isOn ? 1 : 0;
+        }
+            
         if (isOn)
             OnSelected?.Invoke(Data);
     }

@@ -27,5 +27,5 @@ public enum CostumeType
     Boots,
     Ring,
     Trousers,
-
+    All
 }

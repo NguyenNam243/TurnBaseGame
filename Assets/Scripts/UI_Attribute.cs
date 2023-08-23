@@ -11,9 +11,9 @@ public class UI_Attribute : MonoBehaviour
 
     public void UpdateContent(HeroData currentHero)
     {
-        float finalValue = currentHero.attributes[type].value;
+        float finalValue = ConfigDataHelper.UserData.heroes[currentHero.name].attributes[type].value;
 
-        foreach (var costume in currentHero.costumes)
+        foreach (var costume in ConfigDataHelper.UserData.heroes[currentHero.name].costumes)
         {
             if (costume.Value.attributes.ContainsKey(type))
                 finalValue += costume.Value.attributes[type].value;
